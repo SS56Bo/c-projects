@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include <math.h>
 
+#define WIDTH 910
+#define HEIGHT 600
+#define FPS 1
+
 int main(){
-    const int screenWidth = 800;
-    const int screenHeight = 500;
+    InitWindow(WIDTH, HEIGHT, 'Collision Window');
+    SetTargetFPS(FPS);
 
-    InitWindow(screenWidth, screenHeight, 'Fractal Window');
-    SetTargetFPS(60);
-
-    while (!WindowShouldClose)
+    while (!WindowShouldClose())
     {
         /* code */
         BeginDrawing();

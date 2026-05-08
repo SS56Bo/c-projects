@@ -9,7 +9,7 @@ int main(){
     InitWindow(screenWidth, screenHeight, 'Fractal Window');
     SetTargetFPS(60);
 
-    while (!WindowShouldClose)
+    while (!WindowShouldClose())
     {
         /* code */
         BeginDrawing();
