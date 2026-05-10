@@ -9,36 +9,55 @@
 
 typedef struct {
     float x, y, vx, vy;
+    Color color;
 } Particle;
 
 void AddMotionUpdate(Particle *particle) {
     particle->x += particle->vx;
     particle->y += particle->vy;
-    if (particle->x > WIDTH-5 || particle->x < 5) {
+    if (particle->x > WIDTH-PARTICLE_RADIUS || particle->x < PARTICLE_RADIUS) {
         particle->vx = -(particle->vx);
     }
-    if (particle->y > HEIGHT-5 || particle->y < 5) {
+    if (particle->y > HEIGHT-PARTICLE_RADIUS || particle->y < PARTICLE_RADIUS) {
         particle->vy = -(particle->vy);
     }
     //printf("[%f %f]\n", particle->x, particle->y);  DEBUG
 }
 
 void DrawPhysicsParticle(Particle *particle) {
-    DrawCircle(particle->x, particle->y, PARTICLE_RADIUS, GREEN);
+    DrawCircle(particle->x, particle->y, PARTICLE_RADIUS, particle->color);
+}
+
+void PhysicsBundle(Particle *particle) {
+    DrawPhysicsParticle(particle);
+    AddMotionUpdate(particle);
 }
 
 int main(){
     InitWindow(WIDTH, HEIGHT, "Collision Window");
     SetTargetFPS(FPS);
 
-    Particle p = {200, 200, 5, 5};
+    Particle p = {200, 200, 10, 10, GREEN};
+    Particle p1 = {110, 60, 10, 8, PURPLE};
+    Particle p2 = {120, 120, 9, 15, YELLOW};
+    Particle p3 = {400, 400, 5, 8, RED};
+    Particle p4 = {90, 90, 6, 8, MAGENTA};
+    Particle p5 = {100, 80, 5, 4, MAROON};
+    Particle p6 = {50, 200, 10, 10, LIME };
+    Particle p7 = {180, 180, 18, 8, LIGHTGRAY};
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(BLACK);
-            AddMotionUpdate(&p);
-            DrawPhysicsParticle(&p);
+            PhysicsBundle(&p);
+            PhysicsBundle(&p1);
+            PhysicsBundle(&p2);
+            PhysicsBundle(&p3);
+            PhysicsBundle(&p4);
+            PhysicsBundle(&p5);
+            PhysicsBundle(&p6);
+            PhysicsBundle(&p7);
         EndDrawing();
     }
     
