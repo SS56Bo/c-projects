@@ -2,15 +2,18 @@
 #include <stdio.h>
 #include <math.h>
 
-#define WIDTH 910
-#define HEIGHT 600
+#define WIDTH 1080
+#define HEIGHT 720
 #define FPS 60
-#define PARTICLE_RADIUS 10
+#define PARTICLE_RADIUS 5
+#define TOTAL_PARTICLES 800
 
 typedef struct {
     float x, y, vx, vy;
     Color color;
 } Particle;
+
+Particle particles[TOTAL_PARTICLES];
 
 void AddMotionUpdate(Particle *particle) {
     particle->x += particle->vx;
@@ -24,6 +27,7 @@ void AddMotionUpdate(Particle *particle) {
         }
         particle->vx = -(particle->vx);
     }
+
     if (particle->y > HEIGHT-PARTICLE_RADIUS || particle->y < PARTICLE_RADIUS) {
         if (particle->y > HEIGHT-PARTICLE_RADIUS) {
             particle->y = HEIGHT-PARTICLE_RADIUS;
@@ -32,6 +36,7 @@ void AddMotionUpdate(Particle *particle) {
         }
         particle->vy = -(particle->vy); 
     }
+
     //printf("[%f %f]\n", particle->x, particle->y);  DEBUG
 }
 
@@ -39,23 +44,41 @@ void DrawPhysicsParticle(Particle *particle) {
     DrawCircle(particle->x, particle->y, PARTICLE_RADIUS, particle->color);
 }
 
-void PhysicsBundle(Particle *particle) {
-    DrawPhysicsParticle(particle);
-    AddMotionUpdate(particle);
+void InitParticles() {
+    SetRandomSeed(895);
+
+    for (int i = 0; i < TOTAL_PARTICLES; i++) {
+        particles[i].x = GetRandomValue(PARTICLE_RADIUS, WIDTH-PARTICLE_RADIUS);
+        particles[i].y = GetRandomValue(PARTICLE_RADIUS, HEIGHT-PARTICLE_RADIUS);
+        particles[i].vx = GetRandomValue(-5, 10);
+        particles[i].vy = GetRandomValue(-2, 15);
+        particles[i].color = WHITE;
+    }
+}
+
+void DrawParticles() {
+    for (int i =0; i<TOTAL_PARTICLES; i++) {
+        DrawPhysicsParticle(particles+i);
+    }
+}
+
+void UpdateParticles() {
+    for (int i =0; i<TOTAL_PARTICLES; i++) {
+        AddMotionUpdate(particles+i);
+    }
 }
 
 int main(){
     InitWindow(WIDTH, HEIGHT, "Particle Collision");
     SetTargetFPS(FPS);
 
-    Particle p = {200, 200, 10, 10, RED};
-    //Particle p1 = {220, 220, 14, 12, YELLOW};
-       
+    InitParticles();
     while (!WindowShouldClose())
     {
         BeginDrawing();
-            ClearBackground(BLACK);
-            PhysicsBundle(&p);
+            ClearBackground(BLACK);  
+            DrawParticles();
+            UpdateParticles();
             DrawFPS(5, 5);
         EndDrawing();
     }
