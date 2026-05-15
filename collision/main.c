@@ -1,12 +1,14 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #define WIDTH 1080
 #define HEIGHT 720
 #define FPS 60
 #define PARTICLE_RADIUS 5
-#define TOTAL_PARTICLES 800
+#define TOTAL_PARTICLES 50
+#define G 9.8
 
 typedef struct {
     float x, y, vx, vy;
@@ -16,8 +18,9 @@ typedef struct {
 Particle particles[TOTAL_PARTICLES];
 
 void AddMotionUpdate(Particle *particle) {
+    float speed_gravity = particle->vy;
     particle->x += particle->vx;
-    particle->y += particle->vy;
+    particle->y += speed_gravity;
 
     if (particle->x > WIDTH-PARTICLE_RADIUS || particle->x < PARTICLE_RADIUS) {
         if (particle->x > WIDTH-PARTICLE_RADIUS) {
@@ -45,14 +48,38 @@ void DrawPhysicsParticle(Particle *particle) {
 }
 
 void InitParticles() {
-    SetRandomSeed(895);
+    SetRandomSeed(time(NULL));
 
     for (int i = 0; i < TOTAL_PARTICLES; i++) {
         particles[i].x = GetRandomValue(PARTICLE_RADIUS, WIDTH-PARTICLE_RADIUS);
         particles[i].y = GetRandomValue(PARTICLE_RADIUS, HEIGHT-PARTICLE_RADIUS);
-        particles[i].vx = GetRandomValue(-5, 10);
-        particles[i].vy = GetRandomValue(-2, 15);
-        particles[i].color = WHITE;
+        particles[i].vx = GetRandomValue(-5, 5);
+        particles[i].vy = GetRandomValue(-5, 5);
+        // particles[i].color = WHITE;
+
+        switch (GetRandomValue(0, 6))
+        {
+        case 1: 
+            particles[i].color = WHITE;
+            break;
+        case 2:
+            particles[i].color = RED;
+            break;
+        case 3:
+            particles[i].color = YELLOW;
+            break;
+        case 4:
+            particles[i].color = PURPLE;
+            break;
+        case 5:
+            particles[i].color = PINK;
+            break;
+        case 6:
+            particles[i].color = BLUE;
+            break;
+        default:
+            break;
+        }
     }
 }
 
